@@ -9,6 +9,12 @@ var uniqid = require('uniqid');
 require('dotenv').config();
 var mongodbUrl = process.env.MONGODB_URL;
 
+var mongodbConnection = null;
+mongodb.connect(mongodbUrl, function(err, db) {
+  if (err) throw err;
+  mongodbConnection = db;
+});
+
 var app = express();
 
 
@@ -88,16 +94,16 @@ function getSchemeAndHost(request) {
  * Asynchrnously finds ID for a given url and passess it to callback.
  */
 function getIdForUrl(url, cb) {
-  mongodb.connect(mongodbUrl, function(err, db) {
-    if (err) throw err;
-    db.collection('shortened_urls').insertOne({
-      _id: Math.floor(Math.random()*1024*1024+1024*1024),
-      url: url
-    }, function (err, result) {
-      db.close();
-      if (err) return cb(err);
-      cb(null, result.insertedId);
-    });
+  var db = mongodbConnection;
+  if (db === null) {
+    return cb("Connection to mongodb has not yet been established.");
+  }
+  db.collection('shortened_urls').insertOne({
+    _id: Math.floor(Math.random()*1024*1024+1024*1024),
+    url: url
+  }, function (err, result) {
+    if (err) return cb(err);
+    cb(null, result.insertedId);
   });
 };
 
@@ -105,15 +111,15 @@ function getIdForUrl(url, cb) {
  * Asynchronously finds previously shortened url for a given id
  */
 function getUrlForId(id, cb) {
-  mongodb.connect(mongodbUrl, function(err, db) {
-    if (err) throw err;
-    db.collection('shortened_urls').findOne({
-      _id: id,
-    }, function (err, doc) {
-      db.close();
-      if (err) return cb(err);
-      if (doc === null) return cb(null, null);
-      cb(null, doc.url);
-    });
+  var db = mongodbConnection;
+  if (db === null) {
+    return cb("Connection to mongodb has not yet been established.");
+  }
+  db.collection('shortened_urls').findOne({
+    _id: id,
+  }, function (err, doc) {
+    if (err) return cb(err);
+    if (doc === null) return cb(null, null);
+    cb(null, doc.url);
   });
 };
