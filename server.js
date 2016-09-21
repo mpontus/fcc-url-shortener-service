@@ -2,6 +2,7 @@ var http = require('http');
 var path = require('path');
 var express = require('express');
 var mongodb = require('mongodb');
+var validUrl = require('valid-url');
 var uniqid = require('uniqid');
 
 // MongoDB url
@@ -26,11 +27,13 @@ app.get('/', function(req, res) {
 /**
  * Shortens provided url
  */
-app.get(/\/new\/(.*)/, function(req, res) {
+app.get(/\/new\/(.*)/, function(req, res, next) {
   var originalUrl = req.params[0];
-  // var err = new Error("Invalid url");
-  // err.status = 422;
-  // throw err;
+  if (!validUrl.isUri(originalUrl)) {
+    var err = new Error("Invalid url");
+    err.status = 422;
+    return next(err);
+  }
   getIdForUrl(originalUrl, function(err, id) {
     if (err) throw err;
     res.json({
