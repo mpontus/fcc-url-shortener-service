@@ -3,7 +3,6 @@ var path = require('path');
 var express = require('express');
 var mongodb = require('mongodb');
 var validUrl = require('valid-url');
-var uniqid = require('uniqid');
 
 // MongoDB url
 require('dotenv').config();
