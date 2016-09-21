@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Timestamp Microservice</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>URL Shortener Microservice</h1>
+      <h2>Example usage:</h2>
+      <ul>
+        <li>
+          <p>
+            Create a redirect using our API
+          </p>
+          <p>
+            <code><%= schemeAndHost %>/new/http://example.org/</code>
+          </p>
+        </li>
+        <li>
+          <p>
+            Example output:
+          </p>
+          <p>
+            <code>{"original_url": "http://example.org/", "short_url": "<%= schemeAndHost %>/2817"} </code>
+          </p>
+        </li>
+        <li>
+          <p>
+            Following the shortened url
+          </p>
+          <p>
+            <code><%= schemeAndHost %>/2817</code>
+          </p>
+        </li>
+        <li>
+          <p>
+            Will redirect you to
+          </p>
+          <p>
+            <code>http://example.org/</code>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
